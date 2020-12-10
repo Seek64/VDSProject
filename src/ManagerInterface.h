@@ -22,7 +22,7 @@ namespace ClassProject {
 
         virtual   bool isConstant(const BDD_ID f) = 0;
 
-        //virtual   bool isVariable(const BDD_ID x) = 0;
+        virtual   bool isVariable(const BDD_ID x) = 0;
 
         //virtual   BDD_ID topVar(const BDD_ID f) = 0;
 

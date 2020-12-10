@@ -40,6 +40,11 @@ bool ClassProject::Manager::isConstant(const ClassProject::BDD_ID f) {
     return ((f == falseId) || (f == trueId));
 }
 
+bool ClassProject::Manager::isVariable(const ClassProject::BDD_ID f) {
+    auto entry = getUniqueTableEntry(f);
+    return ((entry->getHigh() == trueId) && (entry->getLow() == falseId) && (entry->getTopVar() == f));
+}
+
 size_t ClassProject::Manager::uniqueTableSize() {
     return uniqueTable.size();
 }

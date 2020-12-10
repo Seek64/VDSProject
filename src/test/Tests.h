@@ -76,7 +76,6 @@ TEST(ManagerTest, CreateVarTest) /* NOLINT */
     EXPECT_EQ(bEntry->getLow(), 0);
     EXPECT_EQ(bEntry->getTopVar(), bId);
 
-
 }
 
 TEST(ManagerTest, IsConstantTest) /* NOLINT */
@@ -91,7 +90,19 @@ TEST(ManagerTest, IsConstantTest) /* NOLINT */
     EXPECT_FALSE(manager->isConstant(aId));
     EXPECT_FALSE(manager->isConstant(bId));
 
+}
 
+TEST(ManagerTest, IsVariableTest) /* NOLINT */
+{
+    auto manager = std::make_unique<ClassProject::Manager>();
+
+    auto aId = manager->createVar("a");
+    auto bId = manager->createVar("b");
+
+    EXPECT_FALSE(manager->isVariable(manager->False()));
+    EXPECT_FALSE(manager->isVariable(manager->True()));
+    EXPECT_TRUE(manager->isVariable(aId));
+    EXPECT_TRUE(manager->isVariable(bId));
 
 }
 
