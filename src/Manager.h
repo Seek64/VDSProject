@@ -32,6 +32,8 @@ namespace ClassProject {
 
         const BDD_ID &False() override;
 
+        bool isConstant(const BDD_ID f) override;
+
         size_t uniqueTableSize() override;
 
         std::shared_ptr<TableEntry> getUniqueTableEntry(BDD_ID id);

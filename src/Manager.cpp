@@ -36,6 +36,10 @@ const ClassProject::BDD_ID &ClassProject::Manager::False() {
     return falseId;
 }
 
+bool ClassProject::Manager::isConstant(const ClassProject::BDD_ID f) {
+    return ((f == falseId) || (f == trueId));
+}
+
 size_t ClassProject::Manager::uniqueTableSize() {
     return uniqueTable.size();
 }
@@ -43,5 +47,6 @@ size_t ClassProject::Manager::uniqueTableSize() {
 std::shared_ptr<ClassProject::TableEntry> ClassProject::Manager::getUniqueTableEntry(ClassProject::BDD_ID id) {
     return uniqueTable[id];
 }
+
 
 

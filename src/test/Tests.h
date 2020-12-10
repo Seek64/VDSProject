@@ -79,5 +79,21 @@ TEST(ManagerTest, CreateVarTest) /* NOLINT */
 
 }
 
+TEST(ManagerTest, IsConstantTest) /* NOLINT */
+{
+    auto manager = std::make_unique<ClassProject::Manager>();
+
+    auto aId = manager->createVar("a");
+    auto bId = manager->createVar("b");
+
+    EXPECT_TRUE(manager->isConstant(manager->False()));
+    EXPECT_TRUE(manager->isConstant(manager->True()));
+    EXPECT_FALSE(manager->isConstant(aId));
+    EXPECT_FALSE(manager->isConstant(bId));
+
+
+
+}
+
 #endif //VDS_PROJECT_TESTS_H
 
