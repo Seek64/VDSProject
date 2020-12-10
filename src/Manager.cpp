@@ -45,6 +45,11 @@ bool ClassProject::Manager::isVariable(const ClassProject::BDD_ID f) {
     return ((entry->getHigh() == trueId) && (entry->getLow() == falseId) && (entry->getTopVar() == f));
 }
 
+ClassProject::BDD_ID ClassProject::Manager::topVar(const ClassProject::BDD_ID f) {
+    auto entry = getUniqueTableEntry(f);
+    return entry->getTopVar();
+}
+
 size_t ClassProject::Manager::uniqueTableSize() {
     return uniqueTable.size();
 }

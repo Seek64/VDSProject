@@ -32,9 +32,11 @@ namespace ClassProject {
 
         const BDD_ID &False() override;
 
-        bool isConstant(const BDD_ID f) override;
+        bool isConstant(BDD_ID f) override;
 
-        bool isVariable(const BDD_ID f) override;
+        bool isVariable(BDD_ID f) override;
+
+        BDD_ID topVar(BDD_ID f) override;
 
         size_t uniqueTableSize() override;
 

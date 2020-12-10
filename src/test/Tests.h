@@ -106,5 +106,19 @@ TEST(ManagerTest, IsVariableTest) /* NOLINT */
 
 }
 
+TEST(ManagerTest, TopVarTest) /* NOLINT */
+{
+    auto manager = std::make_unique<ClassProject::Manager>();
+
+    auto aId = manager->createVar("a");
+    auto bId = manager->createVar("b");
+
+    EXPECT_EQ(manager->topVar(manager->False()), manager->False());
+    EXPECT_EQ(manager->topVar(manager->True()), manager->True());
+    EXPECT_EQ(manager->topVar(aId), aId);
+    EXPECT_EQ(manager->topVar(bId), bId);
+
+}
+
 #endif //VDS_PROJECT_TESTS_H
 
