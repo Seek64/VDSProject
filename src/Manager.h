@@ -26,6 +26,8 @@ namespace ClassProject {
 
         Manager();
 
+        size_t uniqueTableSize() override;
+
         std::shared_ptr<TableEntry> getUniqueTableEntry(BDD_ID id);
 
     private:

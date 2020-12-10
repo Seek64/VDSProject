@@ -20,3 +20,7 @@ ClassProject::Manager::Manager() {
 std::shared_ptr<ClassProject::TableEntry> ClassProject::Manager::getUniqueTableEntry(ClassProject::BDD_ID id) {
     return uniqueTable[id];
 }
+
+size_t ClassProject::Manager::uniqueTableSize() {
+    return uniqueTable.size();
+}

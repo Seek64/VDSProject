@@ -33,5 +33,13 @@ TEST(ManagerTest, ConstructorTest) /* NOLINT */
 
 }
 
+TEST(ManagerTest, UniqueTableSizeTest) /* NOLINT */
+{
+    auto manager = std::make_unique<ClassProject::Manager>();
+
+    EXPECT_EQ(manager->uniqueTableSize(), 2);
+
+}
+
 #endif //VDS_PROJECT_TESTS_H
 
