@@ -12,11 +12,27 @@
 #include <unordered_map>
 #include <set>
 #include <string>
+#include <map>
+#include <memory>
+
+#include "TableEntry.h"
 #include "ManagerInterface.h"
 
 namespace ClassProject {
 
+    class Manager : public ManagerInterface {
 
+    public:
+
+        Manager();
+
+        std::shared_ptr<TableEntry> getUniqueTableEntry(BDD_ID id);
+
+    private:
+
+        std::map<BDD_ID, std::shared_ptr<TableEntry>> uniqueTable;
+
+    };
 
 }
 #endif
