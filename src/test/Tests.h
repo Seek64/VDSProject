@@ -57,5 +57,27 @@ TEST(ManagerTest, FalseTest) /* NOLINT */
 
 }
 
+TEST(ManagerTest, CreateVarTest) /* NOLINT */
+{
+    auto manager = std::make_unique<ClassProject::Manager>();
+
+    auto aId = manager->createVar("a");
+    auto bId = manager->createVar("b");
+
+    EXPECT_EQ(aId, 2);
+    EXPECT_EQ(bId, 3);
+
+    auto aEntry = manager->getUniqueTableEntry(aId);
+    EXPECT_EQ(aEntry->getHigh(), 1);
+    EXPECT_EQ(aEntry->getLow(), 0);
+    EXPECT_EQ(aEntry->getTopVar(), aId);
+    auto bEntry = manager->getUniqueTableEntry(bId);
+    EXPECT_EQ(bEntry->getHigh(), 1);
+    EXPECT_EQ(bEntry->getLow(), 0);
+    EXPECT_EQ(bEntry->getTopVar(), bId);
+
+
+}
+
 #endif //VDS_PROJECT_TESTS_H
 

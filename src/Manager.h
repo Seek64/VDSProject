@@ -26,11 +26,13 @@ namespace ClassProject {
 
         Manager();
 
-        size_t uniqueTableSize() override;
+        BDD_ID createVar(const std::string &label) override;
 
         const BDD_ID &True() override;
 
         const BDD_ID &False() override;
+
+        size_t uniqueTableSize() override;
 
         std::shared_ptr<TableEntry> getUniqueTableEntry(BDD_ID id);
 
@@ -38,6 +40,8 @@ namespace ClassProject {
 
         const BDD_ID falseId = 0;
         const BDD_ID trueId = 1;
+
+        BDD_ID nextId;
 
         std::map<BDD_ID, std::shared_ptr<TableEntry>> uniqueTable;
 
