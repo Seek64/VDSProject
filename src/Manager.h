@@ -48,6 +48,18 @@ namespace ClassProject {
 
         BDD_ID coFactorFalse(BDD_ID f) override;
 
+        BDD_ID and2(BDD_ID a, BDD_ID b) override;
+
+        BDD_ID or2(BDD_ID a, BDD_ID b) override;
+
+        BDD_ID xor2(BDD_ID a, BDD_ID b) override;
+
+        BDD_ID neg(BDD_ID a) override;
+
+        BDD_ID nand2(BDD_ID a, BDD_ID b) override;
+
+        BDD_ID nor2(BDD_ID a, BDD_ID b) override;
+
         size_t uniqueTableSize() override;
 
         std::shared_ptr<TableEntry> getUniqueTableEntry(BDD_ID id);
@@ -60,6 +72,8 @@ namespace ClassProject {
         BDD_ID nextId;
 
         std::map<BDD_ID, std::shared_ptr<TableEntry>> uniqueTable;
+
+        BDD_ID findUniqueTableEntry(BDD_ID high, BDD_ID low, BDD_ID topVar);
 
     };
 

@@ -237,5 +237,159 @@ TEST(ManagerTest, CoFactorFalseTest) /* NOLINT */
 
 }
 
+TEST(ManagerTest, And2Test) /* NOLINT */
+{
+    auto manager = std::make_unique<ClassProject::Manager>();
+
+    auto falseId = manager->False();
+    auto trueId = manager->True();
+    auto aId = manager->createVar("a");
+    auto bId = manager->createVar("b");
+
+    auto a_and_b = manager->and2(aId, bId);
+
+    EXPECT_EQ(manager->and2(falseId, falseId), falseId);
+    EXPECT_EQ(manager->and2(falseId, trueId), falseId);
+    EXPECT_EQ(manager->and2(trueId, falseId), falseId);
+    EXPECT_EQ(manager->and2(trueId, trueId), trueId);
+
+    EXPECT_EQ(manager->and2(aId, falseId), falseId);
+    EXPECT_EQ(manager->and2(aId, trueId), aId);
+    EXPECT_EQ(manager->and2(falseId, aId), falseId);
+    EXPECT_EQ(manager->and2(trueId, aId), aId);
+
+    EXPECT_EQ(manager->getUniqueTableEntry(a_and_b)->getHigh(), bId);
+    EXPECT_EQ(manager->getUniqueTableEntry(a_and_b)->getLow(), falseId);
+    EXPECT_EQ(manager->getUniqueTableEntry(a_and_b)->getTopVar(), aId);
+
+}
+
+TEST(ManagerTest, Or2Test) /* NOLINT */
+{
+    auto manager = std::make_unique<ClassProject::Manager>();
+
+    auto falseId = manager->False();
+    auto trueId = manager->True();
+    auto aId = manager->createVar("a");
+    auto bId = manager->createVar("b");
+
+    auto a_or_b = manager->or2(aId, bId);
+
+    EXPECT_EQ(manager->or2(falseId, falseId), falseId);
+    EXPECT_EQ(manager->or2(falseId, trueId), trueId);
+    EXPECT_EQ(manager->or2(trueId, falseId), trueId);
+    EXPECT_EQ(manager->or2(trueId, trueId), trueId);
+
+    EXPECT_EQ(manager->or2(aId, falseId), aId);
+    EXPECT_EQ(manager->or2(aId, trueId), trueId);
+    EXPECT_EQ(manager->or2(falseId, aId), aId);
+    EXPECT_EQ(manager->or2(trueId, aId), trueId);
+
+    EXPECT_EQ(manager->getUniqueTableEntry(a_or_b)->getHigh(), trueId);
+    EXPECT_EQ(manager->getUniqueTableEntry(a_or_b)->getLow(), bId);
+    EXPECT_EQ(manager->getUniqueTableEntry(a_or_b)->getTopVar(), aId);
+
+}
+
+TEST(ManagerTest, Xor2Test) /* NOLINT */
+{
+    auto manager = std::make_unique<ClassProject::Manager>();
+
+    auto falseId = manager->False();
+    auto trueId = manager->True();
+    auto aId = manager->createVar("a");
+    auto bId = manager->createVar("b");
+
+    auto a_xor_b = manager->xor2(aId, bId);
+
+    EXPECT_EQ(manager->xor2(falseId, falseId), falseId);
+    EXPECT_EQ(manager->xor2(falseId, trueId), trueId);
+    EXPECT_EQ(manager->xor2(trueId, falseId), trueId);
+    EXPECT_EQ(manager->xor2(trueId, trueId), falseId);
+
+    EXPECT_EQ(manager->xor2(aId, falseId), aId);
+    EXPECT_EQ(manager->xor2(aId, trueId), manager->neg(aId));
+    EXPECT_EQ(manager->xor2(falseId, aId), aId);
+    EXPECT_EQ(manager->xor2(trueId, aId), manager->neg(aId));
+
+    EXPECT_EQ(manager->getUniqueTableEntry(a_xor_b)->getHigh(), manager->neg(bId));
+    EXPECT_EQ(manager->getUniqueTableEntry(a_xor_b)->getLow(), bId);
+    EXPECT_EQ(manager->getUniqueTableEntry(a_xor_b)->getTopVar(), aId);
+
+}
+
+TEST(ManagerTest, NegTest) /* NOLINT */
+{
+    auto manager = std::make_unique<ClassProject::Manager>();
+
+    auto falseId = manager->False();
+    auto trueId = manager->True();
+    auto aId = manager->createVar("a");
+
+    auto neg_a = manager->neg(aId);
+
+    EXPECT_EQ(manager->neg(falseId), trueId);
+    EXPECT_EQ(manager->neg(trueId), falseId);
+
+    EXPECT_EQ(manager->getUniqueTableEntry(neg_a)->getHigh(), falseId);
+    EXPECT_EQ(manager->getUniqueTableEntry(neg_a)->getLow(), trueId);
+    EXPECT_EQ(manager->getUniqueTableEntry(neg_a)->getTopVar(), aId);
+
+}
+
+TEST(ManagerTest, Nand2Test) /* NOLINT */
+{
+    auto manager = std::make_unique<ClassProject::Manager>();
+
+    auto falseId = manager->False();
+    auto trueId = manager->True();
+    auto aId = manager->createVar("a");
+    auto bId = manager->createVar("b");
+
+    auto a_nand_b = manager->nand2(aId, bId);
+
+    EXPECT_EQ(manager->nand2(falseId, falseId), trueId);
+    EXPECT_EQ(manager->nand2(falseId, trueId), trueId);
+    EXPECT_EQ(manager->nand2(trueId, falseId), trueId);
+    EXPECT_EQ(manager->nand2(trueId, trueId), falseId);
+
+    EXPECT_EQ(manager->nand2(aId, falseId), trueId);
+    EXPECT_EQ(manager->nand2(aId, trueId), manager->neg(aId));
+    EXPECT_EQ(manager->nand2(falseId, aId), trueId);
+    EXPECT_EQ(manager->nand2(trueId, aId), manager->neg(aId));
+
+    EXPECT_EQ(manager->getUniqueTableEntry(a_nand_b)->getHigh(), manager->neg(bId));
+    EXPECT_EQ(manager->getUniqueTableEntry(a_nand_b)->getLow(), trueId);
+    EXPECT_EQ(manager->getUniqueTableEntry(a_nand_b)->getTopVar(), aId);
+
+}
+
+TEST(ManagerTest, Nor2Test) /* NOLINT */
+{
+    auto manager = std::make_unique<ClassProject::Manager>();
+
+    auto falseId = manager->False();
+    auto trueId = manager->True();
+    auto aId = manager->createVar("a");
+    auto bId = manager->createVar("b");
+
+    auto a_nor_b = manager->nor2(aId, bId);
+
+    EXPECT_EQ(manager->nor2(falseId, falseId), trueId);
+    EXPECT_EQ(manager->nor2(falseId, trueId), falseId);
+    EXPECT_EQ(manager->nor2(trueId, falseId), falseId);
+    EXPECT_EQ(manager->nor2(trueId, trueId), falseId);
+
+    EXPECT_EQ(manager->nor2(aId, falseId), manager->neg(aId));
+    EXPECT_EQ(manager->nor2(aId, trueId), falseId);
+    EXPECT_EQ(manager->nor2(falseId, aId), manager->neg(aId));
+    EXPECT_EQ(manager->nor2(trueId, aId), falseId);
+
+    EXPECT_EQ(manager->getUniqueTableEntry(a_nor_b)->getHigh(), falseId);
+    EXPECT_EQ(manager->getUniqueTableEntry(a_nor_b)->getLow(), manager->neg(bId));
+    EXPECT_EQ(manager->getUniqueTableEntry(a_nor_b)->getTopVar(), aId);
+
+}
+
 #endif //VDS_PROJECT_TESTS_H
 

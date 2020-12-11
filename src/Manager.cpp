@@ -77,6 +77,11 @@ ClassProject::BDD_ID ClassProject::Manager::ite(const ClassProject::BDD_ID i, co
     auto fHigh = ite(coFactorTrue(i, fTopVar), coFactorTrue(t, fTopVar), coFactorTrue(e, fTopVar));
     auto fLow = ite(coFactorFalse(i, fTopVar), coFactorFalse(t, fTopVar), coFactorFalse(e, fTopVar));
 
+    // Check if value exists in Unique Table
+    if (findUniqueTableEntry(fHigh, fLow, fTopVar) != falseId) {
+        return findUniqueTableEntry(fHigh, fLow, fTopVar);
+    }
+
     // Add Unique Table Entry
     uniqueTable[nextId] = std::make_shared<TableEntry>(fHigh, fLow, fTopVar);
     nextId++;
@@ -130,12 +135,47 @@ ClassProject::BDD_ID ClassProject::Manager::coFactorFalse(const ClassProject::BD
     return coFactorFalse(f, topVar(f));
 }
 
+ClassProject::BDD_ID ClassProject::Manager::and2(const ClassProject::BDD_ID a, const ClassProject::BDD_ID b) {
+    return ite(a, b, falseId);
+}
+
+ClassProject::BDD_ID ClassProject::Manager::or2(const ClassProject::BDD_ID a, const ClassProject::BDD_ID b) {
+    return ite(a, trueId, b);
+}
+
+ClassProject::BDD_ID ClassProject::Manager::xor2(const ClassProject::BDD_ID a, const ClassProject::BDD_ID b) {
+    return ite(a, neg(b), b);
+}
+
+ClassProject::BDD_ID ClassProject::Manager::neg(const ClassProject::BDD_ID a) {
+    return ite(a, falseId, trueId);
+}
+
+ClassProject::BDD_ID ClassProject::Manager::nand2(const ClassProject::BDD_ID a, const ClassProject::BDD_ID b) {
+    return ite(a, neg(b), trueId);
+}
+
+ClassProject::BDD_ID ClassProject::Manager::nor2(const ClassProject::BDD_ID a, const ClassProject::BDD_ID b) {
+    return ite(a, falseId, neg(b));
+}
+
 size_t ClassProject::Manager::uniqueTableSize() {
     return uniqueTable.size();
 }
 
 std::shared_ptr<ClassProject::TableEntry> ClassProject::Manager::getUniqueTableEntry(ClassProject::BDD_ID id) {
     return uniqueTable[id];
+}
+
+ClassProject::BDD_ID ClassProject::Manager::findUniqueTableEntry(ClassProject::BDD_ID high,
+                                                                 ClassProject::BDD_ID low,
+                                                                 ClassProject::BDD_ID topVar) {
+    for (const auto& entry : uniqueTable) {
+        if ((entry.second->getHigh() == high) && (entry.second->getLow() == low) && (entry.second->getTopVar() == topVar)) {
+            return entry.first;
+        }
+    }
+    return falseId;
 }
 
 
