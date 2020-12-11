@@ -50,6 +50,86 @@ ClassProject::BDD_ID ClassProject::Manager::topVar(const ClassProject::BDD_ID f)
     return entry->getTopVar();
 }
 
+ClassProject::BDD_ID ClassProject::Manager::ite(const ClassProject::BDD_ID i, const ClassProject::BDD_ID t, const ClassProject::BDD_ID e) {
+
+    // Terminal cases
+    if (isVariable(i) && (t == trueId) && (e == falseId)) {
+        return i;
+    } else if ((i == trueId) || (t == e)) {
+        return t;
+    } else if (i == falseId) {
+        return e;
+    }
+
+    // Find TopVar
+    BDD_ID fTopVar;
+    if (isConstant(t) && isConstant(e)) {
+        fTopVar = topVar(i);
+    } else if (isConstant(t)) {
+        fTopVar = std::min(topVar(i), topVar(e));
+    } else if (isConstant(e)) {
+        fTopVar = std::min(topVar(i), topVar(t));
+    } else {
+        fTopVar = std::min(topVar(i), std::min(topVar(t), topVar(e)));
+    }
+
+    // Calculate High and Low successor
+    auto fHigh = ite(coFactorTrue(i, fTopVar), coFactorTrue(t, fTopVar), coFactorTrue(e, fTopVar));
+    auto fLow = ite(coFactorFalse(i, fTopVar), coFactorFalse(t, fTopVar), coFactorFalse(e, fTopVar));
+
+    // Add Unique Table Entry
+    uniqueTable[nextId] = std::make_shared<TableEntry>(fHigh, fLow, fTopVar);
+    nextId++;
+
+    return (nextId - 1);
+}
+
+ClassProject::BDD_ID ClassProject::Manager::coFactorTrue(const ClassProject::BDD_ID f, ClassProject::BDD_ID x) {
+
+    // Terminal Cases
+    if (isConstant(f) || isConstant(x) || (topVar(f) > x)) {
+        return f;
+    }
+
+    auto fEntry = getUniqueTableEntry(f);
+
+    if (topVar(f) == x) {
+        return fEntry->getHigh();
+    } else {
+        auto tCoFac = coFactorTrue(fEntry->getHigh(), x);
+        auto fCoFac = coFactorTrue(fEntry->getLow(), x);
+        return ite(topVar(f), tCoFac, fCoFac);
+    }
+
+}
+
+ClassProject::BDD_ID ClassProject::Manager::coFactorFalse(const ClassProject::BDD_ID f, ClassProject::BDD_ID x) {
+
+    // Terminal Cases
+    if (isConstant(f) || isConstant(x) || (topVar(f) > x)) {
+        return f;
+    }
+
+    auto fEntry = getUniqueTableEntry(f);
+
+    if (topVar(f) == x) {
+        return fEntry->getLow();
+    } else {
+        auto tCoFac = coFactorFalse(fEntry->getHigh(), x);
+        auto fCoFac = coFactorFalse(fEntry->getLow(), x);
+        return ite(topVar(f), tCoFac, fCoFac);
+    }
+
+}
+
+ClassProject::BDD_ID ClassProject::Manager::coFactorTrue(const ClassProject::BDD_ID f) {
+    return coFactorTrue(f, topVar(f));
+}
+
+ClassProject::BDD_ID ClassProject::Manager::coFactorFalse(const ClassProject::BDD_ID f) {
+    return coFactorFalse(f, topVar(f));
+}
+
 size_t ClassProject::Manager::uniqueTableSize() {
     return uniqueTable.size();
 }
