@@ -11,10 +11,10 @@ ClassProject::Manager::Manager() {
 
 
     // Add Leaf Node 0
-    uniqueTable[falseId] = std::make_shared<TableEntry>(falseId, falseId, falseId);
+    uniqueTable[falseId] = std::make_shared<TableEntry>(falseId, falseId, falseId, "False");
 
     // Add Leaf Node 1
-    uniqueTable[trueId] = std::make_shared<TableEntry>(trueId, trueId, trueId);
+    uniqueTable[trueId] = std::make_shared<TableEntry>(trueId, trueId, trueId, "True");
 
     nextId = 2;
 
@@ -22,7 +22,7 @@ ClassProject::Manager::Manager() {
 
 ClassProject::BDD_ID ClassProject::Manager::createVar(const std::string &label) {
 
-    uniqueTable[nextId] = std::make_shared<TableEntry>(trueId, falseId, nextId);
+    uniqueTable[nextId] = std::make_shared<TableEntry>(trueId, falseId, nextId, label);
     nextId++;
 
     return (nextId - 1);
@@ -157,6 +157,10 @@ ClassProject::BDD_ID ClassProject::Manager::nand2(const ClassProject::BDD_ID a, 
 
 ClassProject::BDD_ID ClassProject::Manager::nor2(const ClassProject::BDD_ID a, const ClassProject::BDD_ID b) {
     return ite(a, falseId, neg(b));
+}
+
+std::string ClassProject::Manager::getTopVarName(const ClassProject::BDD_ID &root) {
+    return getUniqueTableEntry(topVar(root))->getName();
 }
 
 size_t ClassProject::Manager::uniqueTableSize() {

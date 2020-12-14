@@ -391,5 +391,23 @@ TEST(ManagerTest, Nor2Test) /* NOLINT */
 
 }
 
+TEST(ManagerTest, GetTopVarNameTest) /* NOLINT */
+{
+    auto manager = std::make_unique<ClassProject::Manager>();
+
+    auto falseId = manager->False();
+    auto trueId = manager->True();
+    auto aId = manager->createVar("a");
+    auto bId = manager->createVar("b");
+    auto a_and_b = manager->and2(aId, bId);
+
+    EXPECT_EQ(manager->getTopVarName(falseId), "False");
+    EXPECT_EQ(manager->getTopVarName(trueId), "True");
+    EXPECT_EQ(manager->getTopVarName(aId), "a");
+    EXPECT_EQ(manager->getTopVarName(bId), "b");
+    EXPECT_EQ(manager->getTopVarName(a_and_b), "a");
+
+}
+
 #endif //VDS_PROJECT_TESTS_H
 

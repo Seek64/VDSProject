@@ -15,15 +15,22 @@ namespace ClassProject {
 
         TableEntry(BDD_ID high, BDD_ID low, BDD_ID topVar);
 
-        BDD_ID getHigh();
-        BDD_ID getLow();
-        BDD_ID getTopVar();
+        TableEntry(BDD_ID high, BDD_ID low, BDD_ID topVar, std::string name);
+
+        BDD_ID getHigh() const;
+
+        BDD_ID getLow() const;
+
+        BDD_ID getTopVar() const;
+
+        std::string getName() const;
 
     private:
 
         const BDD_ID high;
         const BDD_ID low;
         const BDD_ID topVar;
+        const std::string name;
 
     };
 

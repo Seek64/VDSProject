@@ -60,6 +60,8 @@ namespace ClassProject {
 
         BDD_ID nor2(BDD_ID a, BDD_ID b) override;
 
+        std::string getTopVarName(const BDD_ID &root) override;
+
         size_t uniqueTableSize() override;
 
         std::shared_ptr<TableEntry> getUniqueTableEntry(BDD_ID id);
