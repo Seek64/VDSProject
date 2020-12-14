@@ -21,7 +21,7 @@ TEST(TableEntryTest, GetterTests) /* NOLINT */
     EXPECT_EQ(entry2->getHigh(), 4);
     EXPECT_EQ(entry2->getLow(), 5);
     EXPECT_EQ(entry2->getTopVar(), 6);
-    EXPECT_EQ(entry2->getName(), "error");
+    EXPECT_EQ(entry2->getName(), "testName");
 }
 
 TEST(ManagerTest, ConstructorTest) /* NOLINT */
