@@ -15,6 +15,13 @@ TEST(TableEntryTest, GetterTests) /* NOLINT */
     EXPECT_EQ(entry->getHigh(), 1);
     EXPECT_EQ(entry->getLow(), 2);
     EXPECT_EQ(entry->getTopVar(), 3);
+    EXPECT_EQ(entry->getName(), "");
+
+    auto entry2 = std::make_unique<ClassProject::TableEntry>(4, 5, 6, "testName");
+    EXPECT_EQ(entry2->getHigh(), 4);
+    EXPECT_EQ(entry2->getLow(), 5);
+    EXPECT_EQ(entry2->getTopVar(), 6);
+    EXPECT_EQ(entry2->getName(), "error");
 }
 
 TEST(ManagerTest, ConstructorTest) /* NOLINT */
