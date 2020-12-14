@@ -5,7 +5,7 @@
 #ifndef VDS_PROJECT_GTESTS_H
 #define VDS_PROJECT_GTESTS_H
 
-#include "gtest/gtest.h"
+#include "../gtest/gtest.h"
 #include "../TableEntry.h"
 #include "../Manager.h"
 
