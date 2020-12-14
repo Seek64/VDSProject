@@ -163,6 +163,22 @@ std::string ClassProject::Manager::getTopVarName(const ClassProject::BDD_ID &roo
     return getUniqueTableEntry(topVar(root))->getName();
 }
 
+void ClassProject::Manager::findNodes(const ClassProject::BDD_ID &root, std::set<BDD_ID> &nodes_of_root) {
+    nodes_of_root.insert(root);
+    if (!isConstant(root)) {
+        findNodes(getUniqueTableEntry(root)->getHigh(), nodes_of_root);
+        findNodes(getUniqueTableEntry(root)->getLow(), nodes_of_root);
+    }
+}
+
+void ClassProject::Manager::findVars(const ClassProject::BDD_ID &root, std::set<BDD_ID> &nodes_of_root) {
+    if (!isConstant(root)) {
+        nodes_of_root.insert(topVar(root));
+        findVars(getUniqueTableEntry(root)->getHigh(), nodes_of_root);
+        findVars(getUniqueTableEntry(root)->getLow(), nodes_of_root);
+    }
+}
+
 size_t ClassProject::Manager::uniqueTableSize() {
     return uniqueTable.size();
 }

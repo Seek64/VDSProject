@@ -409,5 +409,87 @@ TEST(ManagerTest, GetTopVarNameTest) /* NOLINT */
 
 }
 
+TEST(ManagerTest, FindNodesTest) /* NOLINT */
+{
+    auto manager = std::make_unique<ClassProject::Manager>();
+
+    auto falseId = manager->False();
+    auto trueId = manager->True();
+    auto aId = manager->createVar("a");
+    auto bId = manager->createVar("b");
+    auto cId = manager->createVar("c");
+    auto dId = manager->createVar("d");
+
+    auto a_or_b = manager->or2(aId, bId);
+    auto c_and_d = manager->and2(cId, dId);
+    auto f = manager->and2(a_or_b, c_and_d);
+
+    std::set<ClassProject::BDD_ID> a_or_b_nodes;
+    std::set<ClassProject::BDD_ID> c_and_d_nodes;
+    std::set<ClassProject::BDD_ID> f_nodes;
+
+    manager->findNodes(a_or_b, a_or_b_nodes);
+    manager->findNodes(c_and_d, c_and_d_nodes);
+    manager->findNodes(f, f_nodes);
+
+    EXPECT_EQ(a_or_b_nodes.size(), 4);
+    EXPECT_TRUE(a_or_b_nodes.find(falseId) != a_or_b_nodes.end());
+    EXPECT_TRUE(a_or_b_nodes.find(trueId) != a_or_b_nodes.end());
+    EXPECT_TRUE(a_or_b_nodes.find(bId) != a_or_b_nodes.end());
+    EXPECT_TRUE(a_or_b_nodes.find(a_or_b) != a_or_b_nodes.end());
+
+    EXPECT_EQ(c_and_d_nodes.size(), 4);
+    EXPECT_TRUE(c_and_d_nodes.find(falseId) != c_and_d_nodes.end());
+    EXPECT_TRUE(c_and_d_nodes.find(trueId) != c_and_d_nodes.end());
+    EXPECT_TRUE(c_and_d_nodes.find(dId) != c_and_d_nodes.end());
+    EXPECT_TRUE(c_and_d_nodes.find(c_and_d) != c_and_d_nodes.end());
+
+    EXPECT_EQ(f_nodes.size(), 6);
+    EXPECT_TRUE(f_nodes.find(falseId) != f_nodes.end());
+    EXPECT_TRUE(f_nodes.find(trueId) != f_nodes.end());
+    EXPECT_TRUE(f_nodes.find(dId) != f_nodes.end());
+    EXPECT_TRUE(f_nodes.find(c_and_d) != f_nodes.end());
+    EXPECT_TRUE(f_nodes.find(manager->and2(bId, c_and_d)) != f_nodes.end());
+    EXPECT_TRUE(f_nodes.find(f) != f_nodes.end());
+
+}
+
+TEST(ManagerTest, FindVarsTest) /* NOLINT */
+{
+    auto manager = std::make_unique<ClassProject::Manager>();
+
+    auto aId = manager->createVar("a");
+    auto bId = manager->createVar("b");
+    auto cId = manager->createVar("c");
+    auto dId = manager->createVar("d");
+
+    auto a_or_b = manager->or2(aId, bId);
+    auto c_and_d = manager->and2(cId, dId);
+    auto f = manager->and2(a_or_b, c_and_d);
+
+    std::set<ClassProject::BDD_ID> a_or_b_nodes;
+    std::set<ClassProject::BDD_ID> c_and_d_nodes;
+    std::set<ClassProject::BDD_ID> f_nodes;
+
+    manager->findVars(a_or_b, a_or_b_nodes);
+    manager->findVars(c_and_d, c_and_d_nodes);
+    manager->findVars(f, f_nodes);
+
+    EXPECT_EQ(a_or_b_nodes.size(), 2);
+    EXPECT_TRUE(a_or_b_nodes.find(aId) != a_or_b_nodes.end());
+    EXPECT_TRUE(a_or_b_nodes.find(bId) != a_or_b_nodes.end());
+
+    EXPECT_EQ(c_and_d_nodes.size(), 2);
+    EXPECT_TRUE(c_and_d_nodes.find(cId) != c_and_d_nodes.end());
+    EXPECT_TRUE(c_and_d_nodes.find(dId) != c_and_d_nodes.end());
+
+    EXPECT_EQ(f_nodes.size(), 4);
+    EXPECT_TRUE(f_nodes.find(aId) != f_nodes.end());
+    EXPECT_TRUE(f_nodes.find(bId) != f_nodes.end());
+    EXPECT_TRUE(f_nodes.find(cId) != f_nodes.end());
+    EXPECT_TRUE(f_nodes.find(dId) != f_nodes.end());
+
+}
+
 #endif //VDS_PROJECT_TESTS_H
 
