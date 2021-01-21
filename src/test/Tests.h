@@ -148,7 +148,7 @@ TEST(ManagerTest, IteTest) /* NOLINT */
 
     // a or b
     auto a_or_b = manager->ite(aId, trueId, bId);
-    EXPECT_EQ(a_or_b, 6);
+    EXPECT_EQ(a_or_b, 7);
     auto a_or_b_entry = manager->getUniqueTableEntry(a_or_b);
     EXPECT_EQ(a_or_b_entry->getHigh(), 1);
     EXPECT_EQ(a_or_b_entry->getLow(), 3);
@@ -156,7 +156,7 @@ TEST(ManagerTest, IteTest) /* NOLINT */
 
     // c and d
     auto c_and_d = manager->ite(cId, dId, falseId);
-    EXPECT_EQ(c_and_d, 7);
+    EXPECT_EQ(c_and_d, 9);
     auto c_and_d_entry = manager->getUniqueTableEntry(c_and_d);
     EXPECT_EQ(c_and_d_entry->getHigh(), 5);
     EXPECT_EQ(c_and_d_entry->getLow(), 0);
@@ -164,8 +164,8 @@ TEST(ManagerTest, IteTest) /* NOLINT */
 
     auto f = manager->ite(a_or_b, c_and_d, falseId);
     auto f_entry = manager->getUniqueTableEntry(f);
-    EXPECT_EQ(f_entry->getHigh(), 7);
-    EXPECT_EQ(f_entry->getLow(), 8);
+    EXPECT_EQ(f_entry->getHigh(), 9);
+    EXPECT_EQ(f_entry->getLow(), 11);
     EXPECT_EQ(f_entry->getTopVar(), 2);
 
 }

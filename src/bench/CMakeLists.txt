@@ -9,7 +9,7 @@ add_library(Benchmark
 #Boost
 find_package(Boost COMPONENTS system filesystem REQUIRED)
 
-#Exectuable
+#Executable
 add_executable(VDSProject_bench main_bench.cpp)
 target_link_libraries(VDSProject_bench Manager)
 target_link_libraries(VDSProject_bench Benchmark)

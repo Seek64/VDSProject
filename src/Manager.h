@@ -14,11 +14,24 @@
 #include <string>
 #include <map>
 #include <memory>
+#include <boost/functional/hash.hpp>
 
 #include "TableEntry.h"
 #include "ManagerInterface.h"
 
 namespace ClassProject {
+
+    typedef std::tuple<BDD_ID, BDD_ID, BDD_ID> id_triple;
+
+    struct key_hash : public std::unary_function<id_triple, std::size_t> {
+        std::size_t operator()(const id_triple& k) const {
+            size_t seed = 0;
+            boost::hash_combine(seed, std::get<0>(k));
+            boost::hash_combine(seed, std::get<1>(k));
+            boost::hash_combine(seed, std::get<2>(k));
+            return seed;
+        }
+    };
 
     class Manager : public ManagerInterface {
 
@@ -77,13 +90,15 @@ namespace ClassProject {
 
         BDD_ID nextId;
 
-        std::map<BDD_ID, std::shared_ptr<TableEntry>> uniqueTable;
+        std::unordered_map<BDD_ID, std::shared_ptr<TableEntry>> uniqueTable;
 
-        BDD_ID findUniqueTableEntry(BDD_ID high, BDD_ID low, BDD_ID topVar);
+        std::unordered_map<id_triple, BDD_ID, key_hash> computedTable;
 
     };
 
+
 }
+
 #endif
 
 // Local Variables:

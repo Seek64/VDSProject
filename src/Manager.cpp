@@ -61,6 +61,24 @@ ClassProject::BDD_ID ClassProject::Manager::ite(const ClassProject::BDD_ID i, co
         return e;
     }
 
+    // Standard Triples
+    if (i == t) {
+        return ite(i, trueId, e);
+    } else if (i == e) {
+        return ite(i, t, falseId);
+    } else if (i == neg(e)) {
+        return ite(i, t, trueId);
+    } else if (i == neg(t)) {
+        return ite(i, falseId, e);
+    }
+
+    // Check if value already in computedTable
+    auto computedTableEntry = computedTable[{i, t, e}];
+    if (computedTableEntry != 0) {
+        return computedTableEntry;
+    }
+
+
     // Find TopVar
     BDD_ID fTopVar;
     if (isConstant(t) && isConstant(e)) {
@@ -77,13 +95,9 @@ ClassProject::BDD_ID ClassProject::Manager::ite(const ClassProject::BDD_ID i, co
     auto fHigh = ite(coFactorTrue(i, fTopVar), coFactorTrue(t, fTopVar), coFactorTrue(e, fTopVar));
     auto fLow = ite(coFactorFalse(i, fTopVar), coFactorFalse(t, fTopVar), coFactorFalse(e, fTopVar));
 
-    // Check if value exists in Unique Table
-    if (findUniqueTableEntry(fHigh, fLow, fTopVar) != falseId) {
-        return findUniqueTableEntry(fHigh, fLow, fTopVar);
-    }
-
-    // Add Unique Table Entry
+    // Add Unique and Computed Table Entry
     uniqueTable[nextId] = std::make_shared<TableEntry>(fHigh, fLow, fTopVar);
+    computedTable[{i, t, e}] = nextId;
     nextId++;
 
     return (nextId - 1);
@@ -185,17 +199,6 @@ size_t ClassProject::Manager::uniqueTableSize() {
 
 std::shared_ptr<ClassProject::TableEntry> ClassProject::Manager::getUniqueTableEntry(ClassProject::BDD_ID id) {
     return uniqueTable[id];
-}
-
-ClassProject::BDD_ID ClassProject::Manager::findUniqueTableEntry(ClassProject::BDD_ID high,
-                                                                 ClassProject::BDD_ID low,
-                                                                 ClassProject::BDD_ID topVar) {
-    for (const auto& entry : uniqueTable) {
-        if ((entry.second->getHigh() == high) && (entry.second->getLow() == low) && (entry.second->getTopVar() == topVar)) {
-            return entry.first;
-        }
-    }
-    return falseId;
 }
 
 
