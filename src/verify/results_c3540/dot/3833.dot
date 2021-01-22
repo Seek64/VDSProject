@@ -1,0 +1,46 @@
+digraph BDD {
+center = true;
+{ rank = same; { node [style=invis]; "T" };
+ { node [shape=box,fontsize=12]; "0"; }
+  { node [shape=box,fontsize=12]; "1"; }
+}
+{ rank=same; { node [shape=plaintext,fontname="Times Italic",fontsize=12] "226" };"1699796";}
+{ rank=same; { node [shape=plaintext,fontname="Times Italic",fontsize=12] "238" };"647837";"647838";}
+{ rank=same; { node [shape=plaintext,fontname="Times Italic",fontsize=12] "232" };"647835";"647836";}
+{ rank=same; { node [shape=plaintext,fontname="Times Italic",fontsize=12] "244" };"647833";"647834";}
+{ rank=same; { node [shape=plaintext,fontname="Times Italic",fontsize=12] "264" };"551973";"552731";}
+{ rank=same; { node [shape=plaintext,fontname="Times Italic",fontsize=12] "257" };"551971";"551972";}
+{ rank=same; { node [shape=plaintext,fontname="Times Italic",fontsize=12] "270" };"551969";"551970";}
+{ rank=same; { node [shape=plaintext,fontname="Times Italic",fontsize=12] "250" };"4724";"4821";}
+edge [style = invis]; {"226" -> "238" -> "232" -> "244" -> "264" -> "257" -> "270" -> "250" -> "T"; }
+"4724" -> "1" [style=solid,arrowsize=".75"];
+"4724" -> "0" [style=dashed,arrowsize=".75"];
+"4821" -> "0" [style=solid,arrowsize=".75"];
+"4821" -> "1" [style=dashed,arrowsize=".75"];
+"551969" -> "4821" [style=solid,arrowsize=".75"];
+"551969" -> "4724" [style=dashed,arrowsize=".75"];
+"551970" -> "4724" [style=solid,arrowsize=".75"];
+"551970" -> "4821" [style=dashed,arrowsize=".75"];
+"551971" -> "551969" [style=solid,arrowsize=".75"];
+"551971" -> "551970" [style=dashed,arrowsize=".75"];
+"551972" -> "551970" [style=solid,arrowsize=".75"];
+"551972" -> "551969" [style=dashed,arrowsize=".75"];
+"551973" -> "551971" [style=solid,arrowsize=".75"];
+"551973" -> "551972" [style=dashed,arrowsize=".75"];
+"552731" -> "551972" [style=solid,arrowsize=".75"];
+"552731" -> "551971" [style=dashed,arrowsize=".75"];
+"647833" -> "551973" [style=solid,arrowsize=".75"];
+"647833" -> "552731" [style=dashed,arrowsize=".75"];
+"647834" -> "552731" [style=solid,arrowsize=".75"];
+"647834" -> "551973" [style=dashed,arrowsize=".75"];
+"647835" -> "647833" [style=solid,arrowsize=".75"];
+"647835" -> "647834" [style=dashed,arrowsize=".75"];
+"647836" -> "647834" [style=solid,arrowsize=".75"];
+"647836" -> "647833" [style=dashed,arrowsize=".75"];
+"647837" -> "647835" [style=solid,arrowsize=".75"];
+"647837" -> "647836" [style=dashed,arrowsize=".75"];
+"647838" -> "647836" [style=solid,arrowsize=".75"];
+"647838" -> "647835" [style=dashed,arrowsize=".75"];
+"1699796" -> "647838" [style=solid,arrowsize=".75"];
+"1699796" -> "647837" [style=dashed,arrowsize=".75"];
+}
