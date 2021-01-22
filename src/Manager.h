@@ -14,7 +14,6 @@
 #include <string>
 #include <map>
 #include <memory>
-#include <boost/functional/hash.hpp>
 
 #include "TableEntry.h"
 #include "ManagerInterface.h"
@@ -25,11 +24,7 @@ namespace ClassProject {
 
     struct key_hash : public std::unary_function<id_triple, std::size_t> {
         std::size_t operator()(const id_triple& k) const {
-            size_t seed = 0;
-            boost::hash_combine(seed, std::get<0>(k));
-            boost::hash_combine(seed, std::get<1>(k));
-            boost::hash_combine(seed, std::get<2>(k));
-            return seed;
+            return (std::get<0>(k)<<42u) ^ (std::get<1>(k)<<21u) | std::get<2>(k);;
         }
     };
 
