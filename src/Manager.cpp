@@ -70,7 +70,15 @@ ClassProject::BDD_ID ClassProject::Manager::ite(const ClassProject::BDD_ID i, co
         return ite(i, t, trueId);
     } else if (i == neg(t)) {
         return ite(i, falseId, e);
-    }
+    } else if ((t == trueId) && (topVar(i) > topVar(e))) {
+        return ite(e, trueId, i);
+    } else if ((e == falseId) && (topVar(i) > topVar(t))) {
+        return ite(t, i, falseId);
+    } /*else if ((e == trueId) && (topVar(i) > topVar(t))) {
+        return ite(neg(t), neg(i), trueId);
+    } else if ((t == falseId) && (topVar(i) > topVar(e))) {
+        return ite(neg(e), falseId, neg(i));
+    }*/
 
     // Check if value already in computedTable
     auto computedTableEntry = computedTable[{i, t, e}];
