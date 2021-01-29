@@ -85,8 +85,13 @@ ClassProject::Manager::ite(const ClassProject::BDD_ID i, const ClassProject::BDD
 
 
     // Find TopVar
-    //TODO: INSERT SET METHOD?
-    BDD_ID fTopVar;
+    //TODO: Check which method is faster
+    std::set<BDD_ID> topVars;
+    if (!isConstant(topVar(i))) topVars.insert(topVar(i));
+    if (!isConstant(topVar(t))) topVars.insert(topVar(t));
+    if (!isConstant(topVar(e))) topVars.insert(topVar(e));
+    BDD_ID fTopVar = *std::min_element(topVars.begin(), topVars.end());
+ /*   BDD_ID fTopVar;
     if (isConstant(t) && isConstant(e)) {
         fTopVar = topVar(i);
     } else if (isConstant(t)) {
@@ -95,7 +100,7 @@ ClassProject::Manager::ite(const ClassProject::BDD_ID i, const ClassProject::BDD
         fTopVar = std::min(topVar(i), topVar(t));
     } else {
         fTopVar = std::min(topVar(i), std::min(topVar(t), topVar(e)));
-    }
+    }*/
 
     // Calculate High and Low successor
     auto fHigh = ite(coFactorTrue(i, fTopVar), coFactorTrue(t, fTopVar), coFactorTrue(e, fTopVar));

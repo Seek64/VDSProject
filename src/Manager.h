@@ -5,6 +5,7 @@
 #ifndef mwBDD_H
 #define mwBDD_H
 
+#include <algorithm>
 #include <cassert>
 #include <iostream>
 #include <list>
