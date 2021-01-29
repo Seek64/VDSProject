@@ -28,7 +28,9 @@ namespace ClassProject {
             //std::size_t hash = 0;
             //boost::hash_combine(hash, k);
             //return hash;
-            return (std::get<0>(k)<<42u) ^ (std::get<1>(k)<<21u) | std::get<2>(k);
+            //return (std::get<0>(k)<<42u) ^ (std::get<1>(k)<<21u) ^ std::get<2>(k);
+            return std::get<0>(k) + std::get<1>(k) + std::get<2>(k);
+            //return (((((std::get<0>(k)<<7u)%97u) ^ std::get<1>(k))<<7u)%97u) ^ std::get<2>(k);
         }
     };
 
@@ -80,17 +82,16 @@ namespace ClassProject {
 
         size_t uniqueTableSize() override;
 
+        //TODO: Remove and adjust tests?
         std::shared_ptr<TableEntry> getUniqueTableEntry(BDD_ID id);
 
     private:
 
         const BDD_ID falseId = 0;
         const BDD_ID trueId = 1;
-
         BDD_ID nextId;
-
+        
         std::unordered_map<BDD_ID, std::shared_ptr<TableEntry>> uniqueTable;
-
         std::unordered_map<id_triple, BDD_ID, key_hash> computedTable;
 
     };

@@ -1,11 +1,4 @@
-#include <cassert>
-
 #include "Manager.h"
-
-
-// Local Variables:
-// mode: c++
-// End:
 
 ClassProject::Manager::Manager() {
 
@@ -80,7 +73,7 @@ ClassProject::BDD_ID ClassProject::Manager::ite(const ClassProject::BDD_ID i, co
         return ite(neg(e), falseId, neg(i));
     }*/
 
-    // Check if value already in computedTable
+    // Check if value already exists in computedTable
     auto computedTableEntry = computedTable[{i, t, e}];
     if (computedTableEntry != 0) {
         return computedTableEntry;
@@ -88,6 +81,7 @@ ClassProject::BDD_ID ClassProject::Manager::ite(const ClassProject::BDD_ID i, co
 
 
     // Find TopVar
+    //TODO: INSERT SET METHOD?
     BDD_ID fTopVar;
     if (isConstant(t) && isConstant(e)) {
         fTopVar = topVar(i);
