@@ -71,11 +71,11 @@ ClassProject::Manager::ite(const ClassProject::BDD_ID i, const ClassProject::BDD
         return ite(e, trueId, i);
     } else if ((e == falseId) && (topVar(i) > topVar(t))) {
         return ite(t, i, falseId);
-    } /*else if ((e == trueId) && (topVar(i) > topVar(t))) {
+    } else if ((e == trueId) && (topVar(i) > topVar(t)) && (t != falseId)) {
         return ite(neg(t), neg(i), trueId);
-    } else if ((t == falseId) && (topVar(i) > topVar(e))) {
+    } else if ((t == falseId) && (topVar(i) > topVar(e)) && (e != trueId)) {
         return ite(neg(e), falseId, neg(i));
-    }*/
+    }
 
     // Check if value already exists in computedTable
     auto computedTableEntry = computedTable.find({i, t, e});
