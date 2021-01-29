@@ -24,7 +24,7 @@ namespace ClassProject {
     typedef std::tuple<BDD_ID, BDD_ID, BDD_ID> id_triple;
 
     struct key_hash : public std::unary_function<id_triple, std::size_t> {
-        std::size_t operator()(const id_triple& k) const {
+        std::size_t operator()(const id_triple &k) const {
             //std::size_t hash = 0;
             //boost::hash_combine(hash, k);
             //return hash;
@@ -82,15 +82,12 @@ namespace ClassProject {
 
         size_t uniqueTableSize() override;
 
-        //TODO: Remove and adjust tests?
-        std::shared_ptr<TableEntry> getUniqueTableEntry(BDD_ID id);
-
     private:
 
         const BDD_ID falseId = 0;
         const BDD_ID trueId = 1;
         BDD_ID nextId;
-        
+
         std::unordered_map<BDD_ID, std::shared_ptr<TableEntry>> uniqueTable;
         std::unordered_map<id_triple, BDD_ID, key_hash> computedTable;
 

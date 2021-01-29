@@ -34,16 +34,17 @@ bool ClassProject::Manager::isConstant(const ClassProject::BDD_ID f) {
 }
 
 bool ClassProject::Manager::isVariable(const ClassProject::BDD_ID f) {
-    auto entry = getUniqueTableEntry(f);
+    auto entry = uniqueTable[f];
     return ((entry->getHigh() == trueId) && (entry->getLow() == falseId) && (entry->getTopVar() == f));
 }
 
 ClassProject::BDD_ID ClassProject::Manager::topVar(const ClassProject::BDD_ID f) {
-    auto entry = getUniqueTableEntry(f);
+    auto entry = uniqueTable[f];
     return entry->getTopVar();
 }
 
-ClassProject::BDD_ID ClassProject::Manager::ite(const ClassProject::BDD_ID i, const ClassProject::BDD_ID t, const ClassProject::BDD_ID e) {
+ClassProject::BDD_ID
+ClassProject::Manager::ite(const ClassProject::BDD_ID i, const ClassProject::BDD_ID t, const ClassProject::BDD_ID e) {
 
     // Terminal cases
     if (isVariable(i) && (t == trueId) && (e == falseId)) {
@@ -112,7 +113,7 @@ ClassProject::BDD_ID ClassProject::Manager::coFactorTrue(const ClassProject::BDD
         return f;
     }
 
-    auto fEntry = getUniqueTableEntry(f);
+    auto fEntry = uniqueTable[f];
 
     if (topVar(f) == x) {
         return fEntry->getHigh();
@@ -131,7 +132,7 @@ ClassProject::BDD_ID ClassProject::Manager::coFactorFalse(const ClassProject::BD
         return f;
     }
 
-    auto fEntry = getUniqueTableEntry(f);
+    auto fEntry = uniqueTable[f];
 
     if (topVar(f) == x) {
         return fEntry->getLow();
@@ -176,32 +177,27 @@ ClassProject::BDD_ID ClassProject::Manager::nor2(const ClassProject::BDD_ID a, c
 }
 
 std::string ClassProject::Manager::getTopVarName(const ClassProject::BDD_ID &root) {
-    return getUniqueTableEntry(topVar(root))->getName();
+    return uniqueTable[topVar(root)]->getName();
 }
 
 void ClassProject::Manager::findNodes(const ClassProject::BDD_ID &root, std::set<BDD_ID> &nodes_of_root) {
     nodes_of_root.insert(root);
     if (!isConstant(root)) {
-        findNodes(getUniqueTableEntry(root)->getHigh(), nodes_of_root);
-        findNodes(getUniqueTableEntry(root)->getLow(), nodes_of_root);
+        findNodes(uniqueTable[root]->getHigh(), nodes_of_root);
+        findNodes(uniqueTable[root]->getLow(), nodes_of_root);
     }
 }
 
 void ClassProject::Manager::findVars(const ClassProject::BDD_ID &root, std::set<BDD_ID> &nodes_of_root) {
     if (!isConstant(root)) {
         nodes_of_root.insert(topVar(root));
-        findVars(getUniqueTableEntry(root)->getHigh(), nodes_of_root);
-        findVars(getUniqueTableEntry(root)->getLow(), nodes_of_root);
+        findVars(uniqueTable[root]->getHigh(), nodes_of_root);
+        findVars(uniqueTable[root]->getLow(), nodes_of_root);
     }
 }
 
 size_t ClassProject::Manager::uniqueTableSize() {
     return uniqueTable.size();
 }
-
-std::shared_ptr<ClassProject::TableEntry> ClassProject::Manager::getUniqueTableEntry(ClassProject::BDD_ID id) {
-    return uniqueTable[id];
-}
-
 
 
