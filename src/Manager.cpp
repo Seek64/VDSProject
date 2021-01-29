@@ -5,9 +5,11 @@ ClassProject::Manager::Manager() {
 
     // Add Leaf Node 0
     uniqueTable[falseId] = std::make_shared<TableEntry>(falseId, falseId, falseId, "False");
+    reverseUniqueTable[{falseId, falseId, falseId}] = falseId;
 
     // Add Leaf Node 1
     uniqueTable[trueId] = std::make_shared<TableEntry>(trueId, trueId, trueId, "True");
+    reverseUniqueTable[{trueId, trueId, trueId}] = trueId;
 
     nextId = 2;
 
@@ -16,6 +18,7 @@ ClassProject::Manager::Manager() {
 ClassProject::BDD_ID ClassProject::Manager::createVar(const std::string &label) {
 
     uniqueTable[nextId] = std::make_shared<TableEntry>(trueId, falseId, nextId, label);
+    reverseUniqueTable[{trueId, falseId, nextId}] = nextId;
     nextId++;
 
     return (nextId - 1);
@@ -75,9 +78,9 @@ ClassProject::Manager::ite(const ClassProject::BDD_ID i, const ClassProject::BDD
     }*/
 
     // Check if value already exists in computedTable
-    auto computedTableEntry = computedTable[{i, t, e}];
-    if (computedTableEntry != 0) {
-        return computedTableEntry;
+    auto computedTableEntry = computedTable.find({i, t, e});
+    if (computedTableEntry != computedTable.end()) {
+        return computedTableEntry->second;
     }
 
 
@@ -98,8 +101,16 @@ ClassProject::Manager::ite(const ClassProject::BDD_ID i, const ClassProject::BDD
     auto fHigh = ite(coFactorTrue(i, fTopVar), coFactorTrue(t, fTopVar), coFactorTrue(e, fTopVar));
     auto fLow = ite(coFactorFalse(i, fTopVar), coFactorFalse(t, fTopVar), coFactorFalse(e, fTopVar));
 
+    // Check if value already exists in uniqueTable
+    auto reverseUniqueTableEntry = reverseUniqueTable.find({fHigh, fLow, fTopVar});
+    if (reverseUniqueTableEntry != reverseUniqueTable.end()) {
+        computedTable[{i, t, e}] = reverseUniqueTableEntry->second;
+        return reverseUniqueTableEntry->second;
+    }
+
     // Add Unique and Computed Table Entry
     uniqueTable[nextId] = std::make_shared<TableEntry>(fHigh, fLow, fTopVar);
+    reverseUniqueTable[{fHigh, fLow, fTopVar}] = nextId;
     computedTable[{i, t, e}] = nextId;
     nextId++;
 

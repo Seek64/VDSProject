@@ -214,12 +214,8 @@ TEST_F(ManagerTest, CoFactorFalseTest) /* NOLINT */
 
     EXPECT_EQ(manager->coFactorFalse(f1_id, a_id), c_or_d_id);
     EXPECT_EQ(manager->coFactorFalse(f1_id, b_id), c_or_d_id);
-
-    //FIXME: The following statements create duplicates in the Unique Table
-    // coFactorFalse(f1_id, c_id) calls ite(2,13,5)=ite(a,b+d,d)=ab+d
-    // or2(a_and_b_id, d_id) calls ite(7,1,5)=ite(ab,1,d)=ab+d
-    //EXPECT_EQ(manager->coFactorFalse(f1_id, c_id), manager->or2(a_and_b_id, d_id));
-    //EXPECT_EQ(manager->coFactorFalse(f1_id, d_id), manager->or2(a_and_b_id, c_id));
+    EXPECT_EQ(manager->coFactorFalse(f1_id, c_id), manager->or2(a_and_b_id, d_id));
+    EXPECT_EQ(manager->coFactorFalse(f1_id, d_id), manager->or2(a_and_b_id, c_id));
 }
 
 TEST_F(ManagerTest, And2Test) /* NOLINT */
@@ -283,9 +279,8 @@ TEST_F(ManagerTest, NegTest) /* NOLINT */
     EXPECT_EQ(manager->coFactorFalse(neg_a_id), true_id);
 
     // Check De Morgan's laws
-    //FIXME: Creates duplicate nodes similar to CoFactorFalseTest
-    //EXPECT_EQ(manager->neg(a_and_b_id), manager->or2(neg_a_id, neg_b_id));
-    //EXPECT_EQ(manager->neg(a_or_b_id), manager->and2(neg_a_id, neg_b_id));
+    EXPECT_EQ(manager->neg(a_and_b_id), manager->or2(neg_a_id, neg_b_id));
+    EXPECT_EQ(manager->neg(a_or_b_id), manager->and2(neg_a_id, neg_b_id));
 }
 
 TEST_F(ManagerTest, Nand2Test) /* NOLINT */
@@ -360,7 +355,7 @@ TEST_F(ManagerTest, FindNodesTest) /* NOLINT */
     EXPECT_TRUE(f1_nodes.find(true_id) != f1_nodes.end());
     EXPECT_TRUE(f1_nodes.find(d_id) != f1_nodes.end());
     EXPECT_TRUE(f1_nodes.find(c_or_d_id) != f1_nodes.end());
-    //EXPECT_TRUE(f1_nodes.find(manager->and2(b_id, c_or_d_id)) != f1_nodes.end()); //FIXME: See CoFactorFalseTest
+    EXPECT_TRUE(f1_nodes.find(manager->or2(b_id, c_or_d_id)) != f1_nodes.end());
     EXPECT_TRUE(f1_nodes.find(f1_id) != f1_nodes.end());
 }
 
