@@ -50,7 +50,7 @@ ClassProject::BDD_ID
 ClassProject::Manager::ite(const ClassProject::BDD_ID i, const ClassProject::BDD_ID t, const ClassProject::BDD_ID e) {
 
     // Terminal cases
-    if (isVariable(i) && (t == trueId) && (e == falseId)) {
+    if ((t == trueId) && (e == falseId)) {
         return i;
     } else if ((i == trueId) || (t == e)) {
         return t;
@@ -105,6 +105,10 @@ ClassProject::Manager::ite(const ClassProject::BDD_ID i, const ClassProject::BDD
     // Calculate High and Low successor
     auto fHigh = ite(coFactorTrue(i, fTopVar), coFactorTrue(t, fTopVar), coFactorTrue(e, fTopVar));
     auto fLow = ite(coFactorFalse(i, fTopVar), coFactorFalse(t, fTopVar), coFactorFalse(e, fTopVar));
+
+    if (fHigh == fLow) {
+        return fHigh;
+    }
 
     // Check if value already exists in uniqueTable
     auto reverseUniqueTableEntry = reverseUniqueTable.find({fHigh, fLow, fTopVar});

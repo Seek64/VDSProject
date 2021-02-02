@@ -29,8 +29,8 @@ namespace ClassProject {
             //std::size_t hash = 0;
             //boost::hash_combine(hash, k);
             //return hash;
-            //return (std::get<0>(k)<<42u) ^ (std::get<1>(k)<<21u) ^ std::get<2>(k);
-            return std::get<0>(k) + std::get<1>(k) + std::get<2>(k);
+            return (std::get<0>(k)<<32u) + (std::get<1>(k)<<16u) + std::get<2>(k);
+            //return std::get<0>(k) + std::get<1>(k) + std::get<2>(k);
             //return (((((std::get<0>(k)<<7u)%97u) ^ std::get<1>(k))<<7u)%97u) ^ std::get<2>(k);
         }
     };
