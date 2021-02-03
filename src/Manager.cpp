@@ -2,7 +2,6 @@
 
 ClassProject::Manager::Manager() {
 
-
     // Add Leaf Node 0
     uniqueTable[falseId] = std::make_shared<TableEntry>(falseId, falseId, falseId, "False");
     reverseUniqueTable[{falseId, falseId, falseId}] = falseId;
@@ -10,18 +9,15 @@ ClassProject::Manager::Manager() {
     // Add Leaf Node 1
     uniqueTable[trueId] = std::make_shared<TableEntry>(trueId, trueId, trueId, "True");
     reverseUniqueTable[{trueId, trueId, trueId}] = trueId;
-
-    nextId = 2;
-
 }
 
 ClassProject::BDD_ID ClassProject::Manager::createVar(const std::string &label) {
 
-    uniqueTable[nextId] = std::make_shared<TableEntry>(trueId, falseId, nextId, label);
-    reverseUniqueTable[{trueId, falseId, nextId}] = nextId;
-    nextId++;
+    BDD_ID newId = uniqueTableSize();
+    uniqueTable[newId] = std::make_shared<TableEntry>(trueId, falseId, newId, label);
+    reverseUniqueTable[{trueId, falseId, newId}] = newId;
 
-    return (nextId - 1);
+    return newId;
 }
 
 const ClassProject::BDD_ID &ClassProject::Manager::True() {
@@ -118,12 +114,12 @@ ClassProject::Manager::ite(const ClassProject::BDD_ID i, const ClassProject::BDD
     }
 
     // Add Unique and Computed Table Entry
-    uniqueTable[nextId] = std::make_shared<TableEntry>(fHigh, fLow, fTopVar);
-    reverseUniqueTable[{fHigh, fLow, fTopVar}] = nextId;
-    computedTable[{i, t, e}] = nextId;
-    nextId++;
+    BDD_ID newId = uniqueTableSize();
+    uniqueTable[newId] = std::make_shared<TableEntry>(fHigh, fLow, fTopVar);
+    reverseUniqueTable[{fHigh, fLow, fTopVar}] = newId;
+    computedTable[{i, t, e}] = newId;
 
-    return (nextId - 1);
+    return newId;
 }
 
 ClassProject::BDD_ID ClassProject::Manager::coFactorTrue(const ClassProject::BDD_ID f, ClassProject::BDD_ID x) {
@@ -142,7 +138,6 @@ ClassProject::BDD_ID ClassProject::Manager::coFactorTrue(const ClassProject::BDD
         auto fCoFac = coFactorTrue(fEntry->getLow(), x);
         return ite(topVar(f), tCoFac, fCoFac);
     }
-
 }
 
 ClassProject::BDD_ID ClassProject::Manager::coFactorFalse(const ClassProject::BDD_ID f, ClassProject::BDD_ID x) {
@@ -161,7 +156,6 @@ ClassProject::BDD_ID ClassProject::Manager::coFactorFalse(const ClassProject::BD
         auto fCoFac = coFactorFalse(fEntry->getLow(), x);
         return ite(topVar(f), tCoFac, fCoFac);
     }
-
 }
 
 ClassProject::BDD_ID ClassProject::Manager::coFactorTrue(const ClassProject::BDD_ID f) {

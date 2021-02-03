@@ -87,7 +87,6 @@ namespace ClassProject {
 
         const BDD_ID falseId = 0;
         const BDD_ID trueId = 1;
-        BDD_ID nextId;
 
         std::unordered_map<BDD_ID, std::shared_ptr<TableEntry>> uniqueTable;
         std::unordered_map<id_triple, BDD_ID, key_hash> reverseUniqueTable;
