@@ -97,11 +97,7 @@ bool ClassProject::Reachable::is_reachable(const std::vector<bool> &stateVector)
         stateVarIt++;
     }
 
-    if (reachableStateSpace == True()) {
-        return true;
-    } else {
-        return false;
-    }
+    return (reachableStateSpace == True());
 }
 
 void ClassProject::Reachable::computeTransitionRelation() {

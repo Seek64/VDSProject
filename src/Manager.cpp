@@ -3,18 +3,18 @@
 ClassProject::Manager::Manager() {
 
     // Add Leaf Node 0
-    uniqueTable.emplace(falseId, std::make_shared<TableEntry>(falseId, falseId, falseId, "False"));
+    uniqueTable.emplace_back(falseId, falseId, falseId, "False");
     reverseUniqueTable[{falseId, falseId, falseId}] = falseId;
 
     // Add Leaf Node 1
-    uniqueTable.emplace(trueId, std::make_shared<TableEntry>(trueId, trueId, trueId, "True"));
+    uniqueTable.emplace_back(trueId, trueId, trueId, "True");
     reverseUniqueTable[{trueId, trueId, trueId}] = trueId;
 }
 
 ClassProject::BDD_ID ClassProject::Manager::createVar(const std::string &label) {
 
     BDD_ID newId = uniqueTableSize();
-    uniqueTable.emplace(newId, std::make_shared<TableEntry>(trueId, falseId, newId, label));
+    uniqueTable.emplace_back(trueId, falseId, newId, label);
     reverseUniqueTable[{trueId, falseId, newId}] = newId;
 
     return newId;
@@ -33,13 +33,13 @@ bool ClassProject::Manager::isConstant(const ClassProject::BDD_ID f) {
 }
 
 bool ClassProject::Manager::isVariable(const ClassProject::BDD_ID f) {
-    auto entry = uniqueTable.find(f)->second;
-    return ((entry->getHigh() == trueId) && (entry->getLow() == falseId) && (entry->getTopVar() == f));
+    auto entry = uniqueTable[f];
+    return ((entry.getHigh() == trueId) && (entry.getLow() == falseId) && (entry.getTopVar() == f));
 }
 
 ClassProject::BDD_ID ClassProject::Manager::topVar(const ClassProject::BDD_ID f) {
-    auto entry = uniqueTable.find(f)->second;
-    return entry->getTopVar();
+    auto entry = uniqueTable[f];
+    return entry.getTopVar();
 }
 
 ClassProject::BDD_ID
@@ -82,12 +82,12 @@ ClassProject::Manager::ite(const ClassProject::BDD_ID i, const ClassProject::BDD
 
     // Find TopVar
     //TODO: Check which method is faster
-    std::set<BDD_ID> topVars;
+/*    std::set<BDD_ID> topVars;
     if (!isConstant(topVar(i))) topVars.insert(topVar(i));
     if (!isConstant(topVar(t))) topVars.insert(topVar(t));
     if (!isConstant(topVar(e))) topVars.insert(topVar(e));
-    BDD_ID fTopVar = *std::min_element(topVars.begin(), topVars.end());
- /*   BDD_ID fTopVar;
+    BDD_ID fTopVar = *std::min_element(topVars.begin(), topVars.end());*/
+    BDD_ID fTopVar;
     if (isConstant(t) && isConstant(e)) {
         fTopVar = topVar(i);
     } else if (isConstant(t)) {
@@ -96,7 +96,7 @@ ClassProject::Manager::ite(const ClassProject::BDD_ID i, const ClassProject::BDD
         fTopVar = std::min(topVar(i), topVar(t));
     } else {
         fTopVar = std::min(topVar(i), std::min(topVar(t), topVar(e)));
-    }*/
+    }
 
     // Calculate High and Low successor
     auto fHigh = ite(coFactorTrue(i, fTopVar), coFactorTrue(t, fTopVar), coFactorTrue(e, fTopVar));
@@ -115,7 +115,7 @@ ClassProject::Manager::ite(const ClassProject::BDD_ID i, const ClassProject::BDD
 
     // Add Unique and Computed Table Entry
     BDD_ID newId = uniqueTableSize();
-    uniqueTable.emplace(newId, std::make_shared<TableEntry>(fHigh, fLow, fTopVar));
+    uniqueTable.emplace_back(TableEntry(fHigh, fLow, fTopVar));
     reverseUniqueTable[{fHigh, fLow, fTopVar}] = newId;
     computedTable[{i, t, e}] = newId;
 
@@ -129,13 +129,13 @@ ClassProject::BDD_ID ClassProject::Manager::coFactorTrue(const ClassProject::BDD
         return f;
     }
 
-    auto fEntry = uniqueTable.find(f)->second;
+    auto fEntry = uniqueTable[f];
 
     if (topVar(f) == x) {
-        return fEntry->getHigh();
+        return fEntry.getHigh();
     } else {
-        auto tCoFac = coFactorTrue(fEntry->getHigh(), x);
-        auto fCoFac = coFactorTrue(fEntry->getLow(), x);
+        auto tCoFac = coFactorTrue(fEntry.getHigh(), x);
+        auto fCoFac = coFactorTrue(fEntry.getLow(), x);
         return ite(topVar(f), tCoFac, fCoFac);
     }
 }
@@ -147,13 +147,13 @@ ClassProject::BDD_ID ClassProject::Manager::coFactorFalse(const ClassProject::BD
         return f;
     }
 
-    auto fEntry = uniqueTable.find(f)->second;
+    auto fEntry = uniqueTable[f];
 
     if (topVar(f) == x) {
-        return fEntry->getLow();
+        return fEntry.getLow();
     } else {
-        auto tCoFac = coFactorFalse(fEntry->getHigh(), x);
-        auto fCoFac = coFactorFalse(fEntry->getLow(), x);
+        auto tCoFac = coFactorFalse(fEntry.getHigh(), x);
+        auto fCoFac = coFactorFalse(fEntry.getLow(), x);
         return ite(topVar(f), tCoFac, fCoFac);
     }
 }
@@ -191,22 +191,23 @@ ClassProject::BDD_ID ClassProject::Manager::nor2(const ClassProject::BDD_ID a, c
 }
 
 std::string ClassProject::Manager::getTopVarName(const ClassProject::BDD_ID &root) {
-    return uniqueTable.find(topVar(root))->second->getName();
+    return uniqueTable[topVar(root)].getName();
+    //return uniqueTable.find(topVar(root))->second->getName();
 }
 
 void ClassProject::Manager::findNodes(const ClassProject::BDD_ID &root, std::set<BDD_ID> &nodes_of_root) {
     nodes_of_root.insert(root);
     if (!isConstant(root)) {
-        findNodes(uniqueTable.find(root)->second->getHigh(), nodes_of_root);
-        findNodes(uniqueTable.find(root)->second->getLow(), nodes_of_root);
+        findNodes(uniqueTable[root].getHigh(), nodes_of_root);
+        findNodes(uniqueTable[root].getLow(), nodes_of_root);
     }
 }
 
 void ClassProject::Manager::findVars(const ClassProject::BDD_ID &root, std::set<BDD_ID> &nodes_of_root) {
     if (!isConstant(root)) {
         nodes_of_root.insert(topVar(root));
-        findVars(uniqueTable.find(root)->second->getHigh(), nodes_of_root);
-        findVars(uniqueTable.find(root)->second->getLow(), nodes_of_root);
+        findVars(uniqueTable[root].getHigh(), nodes_of_root);
+        findVars(uniqueTable[root].getLow(), nodes_of_root);
     }
 }
 
